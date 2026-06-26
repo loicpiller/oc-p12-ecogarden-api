@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Tip;
@@ -14,6 +16,21 @@ class TipRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Tip::class);
+    }
+
+    /**
+     * @return Tip[]
+     */
+    public function findApplicableForMonth(int $month): array
+    {
+        $rsm = $this->createResultSetMappingBuilder('t');
+
+        $sql = 'SELECT ' . $rsm->generateSelectClause() . ' FROM tip t WHERE t.months @> :month';
+
+        return $this->getEntityManager()
+            ->createNativeQuery($sql, $rsm)
+            ->setParameter('month', json_encode([$month]))
+            ->getResult();
     }
 
     //    /**
