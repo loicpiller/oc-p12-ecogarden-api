@@ -17,7 +17,7 @@ class Tip
     #[ORM\Column(type: Types::TEXT)]
     private ?string $text = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::JSON, options: ['jsonb' => true])]
     private array $months = [];
 
     public function getId(): ?int
